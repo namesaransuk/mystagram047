@@ -1,24 +1,18 @@
 const PORT = process.env.PORT || 8080;
-const http = require('http')
-const fs = require('fs')
-const path = require('path')
-const hostname = '127.0.0.1'
-const port = 3000;
+const express = require('express');
+const hbs = require('express-handlebars');
+const router = require('./routes/index');
+const app = express();
+const path = require('path');
 
-// const handler = http.createServer((req, res) => {
-//     res.statusCode = 200;
-//     res.setHeader("Content-Type", "text/plain")
-//     res.end("Hello World")
-// })
-
-const handler = (req, res) => {
-    const filename = path.join(__dirname, 'index.html')
-    const indexData = fs.readFileSync(filename)
-    res.end(indexData)
-}
-const server = http.createServer(handler)
-
-server.listen(
+app.engine('hbs', hbs({ extname: 'hbs' }));
+app.set('view engine', 'hbs');
+app.use(express.static(path.join(__dirname, 'public')));
+// app.get('/',(req,res)=>{
+//     res.send("<h1>My Portfolio</h1>");
+// });
+app.use('/', router);
+app.listen(
     PORT,
     () => {
         console.log(`Listening to port ${PORT}`);
